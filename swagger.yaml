@@ -1,0 +1,82 @@
+openapi: 3.0.0
+info:
+  title: GoGitOps
+  description: API for GoGitOps Scoring Client
+  version: 0.1.9
+servers:
+  - url: https://gogitops.beau.cf
+    description: Production Server
+paths:
+  /submit/{Org}/{Repo}/pull/{pullRequestId}:
+    get:
+      summary: Schedule Scan
+      description: Schedules a scan of the pullrequest using the gogitops server
+      parameters:
+        - name: Org
+          in: path
+          required: true
+          description: Github Organization of the Target branch the PR is merging to
+          schema:
+            type : string
+        - name: Repo
+          in: path
+          required: true
+          description: Github Repository of the Target branch the PR is merging to
+          schema:
+            type : string
+        - name: pullRequestId
+          in: path
+          required: true
+          description: the PullRequest ID/Number
+          schema:
+            type : integer
+        - in: header
+          name: apikey
+          schema:
+            type: string
+          required: true
+        - in: header
+          name: user
+          description: Github User ID
+          schema:
+            type: string
+          required: false
+        - in: header
+          name: token
+          description: Github Api Token
+          schema:
+            type: string
+          required: false
+      responses:
+        '202':
+          description: Server Confirmation Response 
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/GitOpsResponse'
+        '400':
+          description: Client Error Response
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/GitOpsResponse'
+        '401':
+          description: Auth Error Response
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/GitOpsResponse'
+        '500':
+          description: Server Confirmation Response 
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/GitOpsResponse'
+components:
+  schemas:
+    GitOpsResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Scan Status
